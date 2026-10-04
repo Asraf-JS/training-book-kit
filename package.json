@@ -1,0 +1,24 @@
+{
+  "name": "training-book-kit",
+  "version": "1.0.0",
+  "description": "Shared build kit, theme and author page for Asraf's training book series",
+  "type": "module",
+  "bin": {
+    "build-book": "bin/build-book.mjs"
+  },
+  "files": [
+    "bin",
+    "theme",
+    "front"
+  ],
+  "author": "Asraf Jaafar Sidik",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "marked": "^14.1.4",
+    "pagedjs": "^0.4.3",
+    "playwright": "^1.56.1"
+  }
+}
