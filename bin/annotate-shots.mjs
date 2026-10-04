@@ -102,7 +102,7 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
       !rects.some(([a, b, c2, d]) => cx + R > a - 2 && cx - R < c2 + 2 && cy + R > b - 2 && cy - R < d + 2) &&
       !placed.some(([px, py]) => Math.hypot(cx - px, cy - py) < 2 * R + 4);
     for (const b of boxes) {
-      const [x0, y0, x1, y1, n] = b;
+      const [x0, y0, x1, y1, n, side] = b;
       const r = [x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD];
       g.beginPath(); g.roundRect(r[0], r[1], r[2] - r[0], r[3] - r[1], RADIUS); g.stroke();
       // Each step number appears once per screenshot, on its first box.
@@ -116,6 +116,9 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
         spots.push([r[2] + d, midY], [r[0] - d, midY], [midX, r[1] - d], [midX, r[3] + d],
                    [r[2] + d, r[1]], [r[2] + d, r[3]]);
       }
+      // A sixth value ("right", "left", "above" or "below") puts that side first.
+      const order = { right: 0, left: 1, above: 2, below: 3 };
+      if (side in order) spots.unshift(spots[order[side]]);
       const [cx, cy] = spots.find(([x, y]) => free(x, y)) || spots[0];
       placed.push([cx, cy]);
       g.beginPath(); g.arc(cx, cy, R, 0, 2 * Math.PI);
