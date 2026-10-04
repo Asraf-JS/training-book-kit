@@ -108,7 +108,8 @@ Then `npm run annotate`, or `npm run annotate -- 03-02-trigger.png` for one imag
 ```
 
 - `raw` is the folder of clean captures and `repoRoot` the course repository, both relative to the annotations file.
-- Each box is `[x0, y0, x1, y1, step]` in the clean capture's pixels. Leave out the step for a plain box, for example when a screenshot has only one thing to point at.
+- Each box is `[x0, y0, x1, y1, step]` in the clean capture's pixels. Leave out the step for a plain box, for example when a screenshot has only one thing to point at. A step number is drawn once per screenshot, on the first box that has it, so a step with two boxes shows one number.
+- The command warns when two boxes overlap. Leave a gap of at least 12 pixels between neighbouring boxes.
 - `crop` is optional and cuts the finished image to that area.
 - The annotated image is written over the file with the same name in any `<chapter>/images/` folder.
 

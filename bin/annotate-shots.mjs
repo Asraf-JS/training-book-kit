@@ -74,6 +74,15 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
   if (!existsSync(raw)) { console.warn(`  missing clean capture: ${relative(repoRoot, raw)}`); continue; }
   if (!out) { console.warn(`  no images folder contains ${name}`); continue; }
 
+  // Warn when two padded boxes touch: the red outlines would run into each other.
+  const bx = shot.boxes || [];
+  for (let i = 0; i < bx.length; i++)
+    for (let j = i + 1; j < bx.length; j++) {
+      const [a, b] = [bx[i], bx[j]], p = 2 * 5 + 2;
+      if (a[0] < b[2] + p && b[0] < a[2] + p && a[1] < b[3] + p && b[1] < a[3] + p)
+        console.warn(`  ${name}: boxes ${i + 1} and ${j + 1} overlap`);
+    }
+
   const png = await page.evaluate(async ({ src, boxes, crop }) => {
     const RED = "rgb(232, 17, 35)", PAD = 5, WIDTH = 3, RADIUS = 8, R = 15;
     const img = new Image();
@@ -85,6 +94,7 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
     g.drawImage(img, 0, 0);
     g.lineWidth = WIDTH; g.strokeStyle = RED;
     const placed = [];
+    const numbered = new Set();
     const rects = boxes.map(([x0, y0, x1, y1]) => [x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD]);
     // A badge spot is free if its circle stays on the image and clear of every box and badge.
     const free = (cx, cy) =>
@@ -95,7 +105,9 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
       const [x0, y0, x1, y1, n] = b;
       const r = [x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD];
       g.beginPath(); g.roundRect(r[0], r[1], r[2] - r[0], r[3] - r[1], RADIUS); g.stroke();
-      if (!n) continue;
+      // Each step number appears once per screenshot, on its first box.
+      if (!n || numbered.has(n)) continue;
+      numbered.add(n);
       const gap = R + 8, midX = (r[0] + r[2]) / 2, midY = (r[1] + r[3]) / 2;
       // Right of the box first, then left, above, below; then nudge further out.
       const spots = [];
