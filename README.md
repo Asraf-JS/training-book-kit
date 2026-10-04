@@ -9,6 +9,7 @@ Every book in the series uses this kit, so a change here (the layout, a palette,
 | Path | What it is |
 |------|-----------|
 | `bin/build-book.mjs` | The `build-book` command. Converts the Markdown with marked, lays out pages with paged.js and prints the PDF with Chromium |
+| `bin/annotate-shots.mjs` | The `annotate-shots` command. Draws red highlight boxes and step numbers on course screenshots |
 | `theme/series.css` | The shared layout for every book |
 | `theme/palettes/` | One colour file per product: `copilot.css`, `power-automate.css` |
 | `front/about-the-author.md` | The About the author page, shared by every book |
@@ -80,6 +81,36 @@ See the [Microsoft 365 Copilot Workshop](https://github.com/Asraf-JS/M365-Copilo
 A file path that starts with `kit:` is read from this kit. Any other path is relative to the course's `book/` folder.
 
 Cover and program flow icons can be any of `chat`, `doc`, `check`, `spark`, `play`, `plus`, `lines` and `nodes`, or a single letter such as `W` or `X`.
+
+## Annotate screenshots
+
+`annotate-shots` draws the series' highlight style on a course's screenshots: a 3px red (232, 17, 35) rounded box around each thing to click, and a white circle with a red step number beside it. Clean captures stay in a separate folder, so boxes can be moved and redrawn without recapturing.
+
+Add a script to the course's `book/package.json`:
+
+```json
+"scripts": { "build": "build-book", "annotate": "annotate-shots ../_design/shots/annotations.json" }
+```
+
+Then `npm run annotate`, or `npm run annotate -- 03-02-trigger.png` for one image. The annotations file looks like this:
+
+```json
+{
+  "raw": "raw",
+  "repoRoot": "../..",
+  "shots": {
+    "03-02-trigger.png": {
+      "boxes": [[8, 560, 616, 592, 2], [8, 600, 616, 632, 3]],
+      "crop": [0, 48, 1600, 900]
+    }
+  }
+}
+```
+
+- `raw` is the folder of clean captures and `repoRoot` the course repository, both relative to the annotations file.
+- Each box is `[x0, y0, x1, y1, step]` in the clean capture's pixels. Leave out the step for a plain box, for example when a screenshot has only one thing to point at.
+- `crop` is optional and cuts the finished image to that area.
+- The annotated image is written over the file with the same name in any `<chapter>/images/` folder.
 
 ## How the Markdown is converted
 
