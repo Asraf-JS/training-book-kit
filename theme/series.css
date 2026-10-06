@@ -127,6 +127,9 @@ blockquote p:last-child { margin-bottom: 0; }
 blockquote.tip { border-color: var(--rule-tip); background: var(--tint-tip); }
 blockquote.try { border-color: var(--rule-try); background: var(--tint-try); }
 blockquote.key { border-color: var(--rule-key); background: var(--tint-key); }
+blockquote.warn { position: relative; border-color: var(--rule-warn, #d13438); background: var(--tint-warn, #fdecec); padding-left: 11mm; }
+blockquote.warn::before { content: "!"; position: absolute; left: 3.4mm; top: 2.6mm; width: 4.8mm; height: 4.8mm; border-radius: 50%; background: var(--rule-warn, #d13438); color: #fff; font-weight: 700; font-size: 9pt; line-height: 4.8mm; text-align: center; }
+blockquote.warn strong { color: #a4262c; }
 
 /* Figures */
 figure { margin: 3mm 0 5mm; text-align: center; break-inside: avoid; }

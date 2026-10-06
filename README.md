@@ -122,7 +122,7 @@ Then `npm run annotate`, or `npm run annotate -- 03-02-trigger.png` for one imag
 - The topic number is dropped from the heading ("03 — Copilot Chat" becomes Chapter 3, "Copilot Chat").
 - Website-only lines are removed: "Prompts to Try" links and Back/Next navigation.
 - An image followed by an italic line becomes a figure with a caption. An image titled `"landscape"` gets its own page, turned sideways.
-- Callouts are coloured by their opening bold label: Tip and Good habit are teal, Try it is purple, Key point and Why it matters are orange, and everything else (Note, License note) is blue.
+- Callouts are coloured by their opening bold label: Tip and Good habit are teal, Try it is purple, Key point, Important and Why it matters are orange, Warning, Stop and Caution are red with an exclamation mark, and everything else (Note, License note) is blue.
 - Links to other pages of the site become plain text. Links to files point to the course repository on GitHub.
 
 ## Adding a product palette
