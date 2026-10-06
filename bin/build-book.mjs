@@ -98,7 +98,8 @@ const WEB_ONLY = [
 const CALLOUTS = [
   [/^(tip|good habit)/i, "tip"],
   [/^(try it|workshop exercise|exercise)/i, "try"],
-  [/^(key point|important|warning|remember|why it matters)/i, "key"],
+  [/^(warning|stop|caution)/i, "warn"],
+  [/^(key point|important|remember|why it matters)/i, "key"],
 ];
 
 let idSeq = 0;
