@@ -83,7 +83,7 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
         console.warn(`  ${name}: boxes ${i + 1} and ${j + 1} overlap`);
     }
 
-  const png = await page.evaluate(async ({ src, boxes, crop }) => {
+  const { png, crowded } = await page.evaluate(async ({ src, boxes, crop }) => {
     const RED = "rgb(232, 17, 35)", PAD = 5, WIDTH = 3, RADIUS = 8, R = 15;
     const img = new Image();
     img.src = src;
@@ -93,12 +93,14 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
     const g = c.getContext("2d");
     g.drawImage(img, 0, 0);
     g.lineWidth = WIDTH; g.strokeStyle = RED;
-    const placed = [];
+    const placed = [], crowded = [];
     const numbered = new Set();
     const rects = boxes.map(([x0, y0, x1, y1]) => [x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD]);
-    // A badge spot is free if its circle stays on the image and clear of every box and badge.
+    // A badge spot is free if its circle stays inside the visible area (the crop, when
+    // there is one) and clear of every box and badge.
+    const [vx0, vy0, vx1, vy1] = crop || [0, 0, c.width, c.height];
     const free = (cx, cy) =>
-      cx - R >= 0 && cy - R >= 0 && cx + R <= c.width && cy + R <= c.height &&
+      cx - R >= vx0 && cy - R >= vy0 && cx + R <= vx1 && cy + R <= vy1 &&
       !rects.some(([a, b, c2, d]) => cx + R > a - 2 && cx - R < c2 + 2 && cy + R > b - 2 && cy - R < d + 2) &&
       !placed.some(([px, py]) => Math.hypot(cx - px, cy - py) < 2 * R + 4);
     for (const b of boxes) {
@@ -119,7 +121,9 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
       // A sixth value ("right", "left", "above" or "below") puts that side first.
       const order = { right: 0, left: 1, above: 2, below: 3 };
       if (side in order) spots.unshift(spots[order[side]]);
-      const [cx, cy] = spots.find(([x, y]) => free(x, y)) || spots[0];
+      const spot = spots.find(([x, y]) => free(x, y));
+      if (!spot) crowded.push(n);
+      const [cx, cy] = spot || spots[0];
       placed.push([cx, cy]);
       g.beginPath(); g.arc(cx, cy, R, 0, 2 * Math.PI);
       g.fillStyle = "#fff"; g.fill(); g.stroke();
@@ -132,9 +136,10 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
       outC.width = crop[2] - crop[0]; outC.height = crop[3] - crop[1];
       outC.getContext("2d").drawImage(c, crop[0], crop[1], outC.width, outC.height, 0, 0, outC.width, outC.height);
     }
-    return outC.toDataURL("image/png").split(",")[1];
+    return { png: outC.toDataURL("image/png").split(",")[1], crowded };
   }, { src: `data:image/png;base64,${readFileSync(raw).toString("base64")}`, boxes: shot.boxes || [], crop: shot.crop || null });
 
+  for (const n of crowded) console.warn(`  ${name}: badge ${n} has no clear spot and covers other content`);
   writeFileSync(out, Buffer.from(png, "base64"));
   console.log(`  ${relative(repoRoot, out)}`);
   done++;
