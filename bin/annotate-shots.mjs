@@ -12,6 +12,7 @@
 //     "shots": {
 //       "03-02-trigger.png": {
 //         "boxes": [[x0, y0, x1, y1, 2], [x0, y0, x1, y1]],
+//         "arrows": [[x0, y0, x1, y1]],  optional, head at (x1, y1)
 //         "crop": [x0, y0, x1, y1]    optional
 //       }
 //     }
@@ -19,7 +20,9 @@
 //
 // Coordinates are pixels in the clean capture. The fifth number in a box is the
 // step it belongs to, drawn in a circle beside the box; leave it out for a plain
-// box. The finished image is written over <repoRoot>/*/images/<file>.
+// box. An arrow is a red line with a head at its second point, for example from a
+// selected card on the canvas to the settings panel it opened. The finished image
+// is written over <repoRoot>/*/images/<file>.
 //
 // Style matches the series: a 3px red (232, 17, 35) rounded box with 5px padding,
 // and a white circle with a red outline and red number.
@@ -83,7 +86,7 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
         console.warn(`  ${name}: boxes ${i + 1} and ${j + 1} overlap`);
     }
 
-  const { png, crowded } = await page.evaluate(async ({ src, boxes, crop }) => {
+  const { png, crowded } = await page.evaluate(async ({ src, boxes, arrows, crop }) => {
     const RED = "rgb(232, 17, 35)", PAD = 5, WIDTH = 3, RADIUS = 8, R = 15;
     const img = new Image();
     img.src = src;
@@ -94,6 +97,15 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
     g.drawImage(img, 0, 0);
     g.lineWidth = WIDTH; g.strokeStyle = RED;
     const placed = [], crowded = [];
+    for (const [ax0, ay0, ax1, ay1] of arrows) {
+      const ang = Math.atan2(ay1 - ay0, ax1 - ax0), H = 14;
+      g.beginPath(); g.moveTo(ax0, ay0);
+      g.lineTo(ax1 - (H - 2) * Math.cos(ang), ay1 - (H - 2) * Math.sin(ang)); g.stroke();
+      g.beginPath(); g.moveTo(ax1, ay1);
+      g.lineTo(ax1 - H * Math.cos(ang - 0.45), ay1 - H * Math.sin(ang - 0.45));
+      g.lineTo(ax1 - H * Math.cos(ang + 0.45), ay1 - H * Math.sin(ang + 0.45));
+      g.closePath(); g.fillStyle = RED; g.fill();
+    }
     const numbered = new Set();
     const rects = boxes.map(([x0, y0, x1, y1]) => [x0 - PAD, y0 - PAD, x1 + PAD, y1 + PAD]);
     // A badge spot is free if its circle stays inside the visible area (the crop, when
@@ -137,7 +149,7 @@ for (const [name, shot] of Object.entries(spec.shots || {})) {
       outC.getContext("2d").drawImage(c, crop[0], crop[1], outC.width, outC.height, 0, 0, outC.width, outC.height);
     }
     return { png: outC.toDataURL("image/png").split(",")[1], crowded };
-  }, { src: `data:image/png;base64,${readFileSync(raw).toString("base64")}`, boxes: shot.boxes || [], crop: shot.crop || null });
+  }, { src: `data:image/png;base64,${readFileSync(raw).toString("base64")}`, boxes: shot.boxes || [], arrows: shot.arrows || [], crop: shot.crop || null });
 
   for (const n of crowded) console.warn(`  ${name}: badge ${n} has no clear spot and covers other content`);
   writeFileSync(out, Buffer.from(png, "base64"));

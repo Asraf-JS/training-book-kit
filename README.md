@@ -111,6 +111,8 @@ Then `npm run annotate`, or `npm run annotate -- 03-02-trigger.png` for one imag
 - Each box is `[x0, y0, x1, y1, step]` in the clean capture's pixels. Leave out the step for a plain box, for example when a screenshot has only one thing to point at. A step number is drawn once per screenshot, on the first box that has it, so a step with two boxes shows one number.
 - The command warns when two boxes overlap. Leave a gap of at least 12 pixels between neighbouring boxes.
 - Add a sixth value, `"right"`, `"left"`, `"above"` or `"below"`, to say where the number goes when the default spot would cover a label: `[x0, y0, x1, y1, step, "below"]`.
+- `arrows` is optional: `[[x0, y0, x1, y1]]` draws a red arrow with its head at the second point. Use it on progress screenshots to link the selected card on the canvas to the settings panel it opened.
+- Badges are placed inside the crop, never on the part it cuts away. When a badge has no clear spot, the command names it.
 - `crop` is optional and cuts the finished image to that area.
 - The annotated image is written over the file with the same name in any `<chapter>/images/` folder.
 
