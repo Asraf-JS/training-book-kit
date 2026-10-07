@@ -13,6 +13,7 @@ Every book in the series uses this kit, so a change here (the layout, a palette,
 | `theme/series.css` | The shared layout for every book |
 | `theme/palettes/` | One colour file per product: `copilot.css`, `power-automate.css` |
 | `front/about-the-author.md` | The About the author page, shared by every book |
+| `COURSE-CONVENTIONS.md` | The shared writing style, repository layout and chapter skeletons for every course. Each course's `CLAUDE.md` points here |
 
 Fonts (Inter and JetBrains Mono) come from npm packages and are embedded in the PDF.
 
