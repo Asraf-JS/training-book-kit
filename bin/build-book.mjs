@@ -167,6 +167,10 @@ function renderFile(file, { demote = 0, sectionPrefix = "s" } = {}) {
     (_, img, cap) => `<figure>${img}${cap ? `<figcaption>${cap}</figcaption>` : ""}</figure>\n`
   );
 
+  // A collapsible <details> box (such as "What should you see?") prints open, as a titled box.
+  html = html.replace(/<details[^>]*>\s*<summary>([\s\S]*?)<\/summary>/g, '<div class="expect"><p class="expect-title">$1</p>');
+  html = html.replace(/<\/details>/g, "</div>");
+
   // Style each callout by its opening label.
   html = html.replace(/<blockquote>\s*<p><strong>([^<]+)<\/strong>/g, (m, label) => {
     const hit = CALLOUTS.find(([re]) => re.test(label.trim()));

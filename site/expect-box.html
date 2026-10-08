@@ -1,0 +1,30 @@
+<!-- "What should you see?" boxes for course sites. Paste this block into
+     _layouts/default.html, just before the closing body tag. It styles the collapsible
+     <details markdown="1"><summary>What should you see?</summary> ... </details> blocks
+     that chapter notes use for expected results. The book prints them open. -->
+<style>
+.main-inner details{
+  margin:14px 0 22px;padding:0 18px;
+  border:1px solid var(--border);border-radius:10px;
+  background:var(--bg-soft);
+}
+.main-inner details > summary{
+  list-style:none;cursor:pointer;
+  margin:0 -18px;padding:11px 18px;
+  font-size:14px;font-weight:600;color:var(--teal);
+  border-radius:10px;
+}
+.main-inner details > summary::-webkit-details-marker{display:none;}
+.main-inner details > summary::before{
+  content:"\25B8";display:inline-block;width:1.1em;
+  transition:transform .15s;
+}
+.main-inner details[open] > summary::before{transform:rotate(90deg);}
+.main-inner details > summary:hover{background:var(--teal-light);}
+.main-inner details[open] > summary{
+  border-bottom:1px solid var(--border);
+  border-radius:10px 10px 0 0;margin-bottom:14px;
+}
+.main-inner details[open]{padding-bottom:4px;}
+.main-inner details table{background:var(--bg);}
+</style>
