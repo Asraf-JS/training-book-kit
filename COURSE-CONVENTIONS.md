@@ -58,6 +58,8 @@ book/                      book.config.json, front/introduction.md, package.json
 .gitignore                 node_modules/, the browser profile folder, _trainer/
 ```
 
+Every site layout must include this kit's `site/image-lightbox.html`, pasted just before `</body>` in `_layouts/default.html`. Clicking a screenshot then opens it full size with its alt text as the caption. When you set up a new course, or touch the layout of an older one that doesn't have it yet, add it. If the snippet changes, update it here first, then copy it into each course.
+
 ---
 
 ## Root README

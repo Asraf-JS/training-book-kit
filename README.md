@@ -12,6 +12,7 @@ Every book in the series uses this kit, so a change here (the layout, a palette,
 | `bin/annotate-shots.mjs` | The `annotate-shots` command. Draws red highlight boxes and step numbers on course screenshots |
 | `theme/series.css` | The shared layout for every book |
 | `theme/palettes/` | One colour file per product: `copilot.css`, `power-automate.css` |
+| `site/image-lightbox.html` | Click-to-enlarge popup for screenshots on the course websites. Paste it just before `</body>` in each course's `_layouts/default.html` |
 | `front/about-the-author.md` | The About the author page, shared by every book |
 | `COURSE-CONVENTIONS.md` | The shared writing style, repository layout and chapter skeletons for every course. Each course's `CLAUDE.md` points here |
 
