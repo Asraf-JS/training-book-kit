@@ -12,9 +12,10 @@ Every book in the series uses this kit, so a change here (the layout, a palette,
 | `bin/annotate-shots.mjs` | The `annotate-shots` command. Draws red highlight boxes and step numbers on course screenshots |
 | `theme/series.css` | The shared layout for every book |
 | `theme/palettes/` | One colour file per product: `copilot.css`, `power-automate.css` |
-| `site/image-lightbox.html` | Click-to-enlarge popup for screenshots on the course websites. Paste it just before `</body>` in each course's `_layouts/default.html` |
+| `site/image-lightbox.html` | Opens a clicked screenshot in its own window on the course websites (or enlarges it in the page if pop-ups are blocked). Paste it just before `</body>` in each course's `_layouts/default.html` |
 | `site/page-nav.html` | Previous and next chapter links at the bottom of every page on the course websites, built from the sidebar. Paste it just before `</body>` in each course's `_layouts/default.html` |
 | `site/expect-box.html` | Styles the collapsible **What should you see?** boxes on the course websites. Paste it just before the closing body tag in each course's `_layouts/default.html`. The book prints these boxes open |
+| `site/side-window.html` | A **Pop out** button on every chapter page of the course websites: the page moves into an always-on-top window a quarter of the screen wide (Edge and Chrome), or an ordinary window on the right in other browsers. Paste it just before the closing body tag, after the lightbox |
 | `front/about-the-author.md` | The About the author page, shared by every book |
 | `COURSE-CONVENTIONS.md` | The shared writing style, repository layout and chapter skeletons for every course. Each course's `CLAUDE.md` points here |
 
