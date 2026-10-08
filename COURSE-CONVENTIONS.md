@@ -163,6 +163,8 @@ Based on M365-Copilot-Workshop:
 
 ## Git and review
 
-- Asraf reviews and merges in GitHub Desktop. Work on a branch and open a pull request. Never push to `main`.
+- Work on a branch and open a pull request. Never push to `main`.
+- Claude merges its own pull requests once its checks pass (Asraf's decision, October 2026), so Asraf doesn't have to merge each one. Ask him first, and leave the pull request open, when a change is large, changes what participants are taught, or he has asked to review it.
+- Branches are deleted by GitHub's **Automatically delete head branches** setting, which is on in each course repository. A Claude session can't delete branches itself.
 - Once a branch's pull request is merged, start follow-up work on a new branch from the latest `main`.
 - Keep the course's `CLAUDE.md` "Where things stand" section current in the same pull request as the work it describes, so the next session starts from the right place.
