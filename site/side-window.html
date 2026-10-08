@@ -1,0 +1,105 @@
+<!-- "Pop out" side window for course sites. Paste this whole block into
+     _layouts/default.html, just before the closing body tag (after the lightbox).
+
+     Every chapter page (notes and prompts) gets a Pop out button above its title.
+     In Edge and Chrome it moves the page into a Picture-in-Picture window, which
+     stays on top of other windows, a quarter of the screen wide and full height,
+     so participants can follow the steps while they work in the app. Copy buttons,
+     What should you see? boxes and screenshots keep working in it. A link opens in
+     the main window. Other browsers get an ordinary window on the right quarter of
+     the screen, which isn't always on top. -->
+<style>
+.side-pop{
+  display:inline-flex;align-items:center;gap:6px;
+  margin:0 0 18px;padding:7px 14px;
+  border:1px solid var(--teal);border-radius:999px;
+  background:var(--bg);color:var(--teal);
+  font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+}
+.side-pop:hover,.side-pop:focus-visible{background:var(--teal-light);outline:none;}
+.side-away{
+  margin:0 0 24px;padding:16px 18px;
+  border:1px dashed var(--border);border-radius:10px;
+  color:var(--text-mid);font-size:14px;
+}
+.side-away button{
+  margin-left:8px;padding:5px 12px;border:1px solid var(--teal);border-radius:999px;
+  background:var(--bg);color:var(--teal);font:inherit;font-size:13px;font-weight:600;cursor:pointer;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const main = document.querySelector(".main-inner");
+  if (!main) return;
+  // Chapter pages only: this page sits under one of the sidebar's chapters.
+  const here = location.pathname;
+  const inChapter = Array.from(document.querySelectorAll(".sidebar-nav a.nav-item")).some(function (a) {
+    return here.indexOf(new URL(a.href, location.href).pathname) === 0;
+  });
+  if (!inChapter) return;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "side-pop";
+  btn.title = "Open this page in a narrow window on the right, to follow while you work";
+  btn.textContent = "Pop out ↗";
+  const h1 = main.querySelector("h1");
+  main.insertBefore(btn, h1 || main.firstChild);
+
+  btn.addEventListener("click", async function () {
+    const scr = window.screen;
+    const w = Math.round(scr.availWidth * 0.25);
+    const h = scr.availHeight;
+
+    if ("documentPictureInPicture" in window) {
+      try {
+        const pip = await documentPictureInPicture.requestWindow({ width: w, height: h });
+        const doc = pip.document;
+        doc.title = document.title;
+        // Same styles as the page, with stylesheet links made absolute.
+        document.querySelectorAll("style, link[rel=stylesheet]").forEach(function (n) {
+          const c = n.cloneNode(true);
+          if (c.tagName === "LINK") c.href = n.href;
+          doc.head.appendChild(c);
+        });
+        const fit = doc.createElement("style");
+        fit.textContent = "body{display:block;min-height:0;} .main-inner{padding:20px 18px 40px !important;max-width:none;} .side-pop,.breadcrumb{display:none;}";
+        doc.head.appendChild(fit);
+
+        // Links and images keep working once moved: make their addresses absolute.
+        main.querySelectorAll("a[href]").forEach(function (a) { a.setAttribute("href", a.href); });
+        main.querySelectorAll("img[src]").forEach(function (i) { i.setAttribute("src", i.src); });
+
+        // Leave a note in the page, then move the content (with its buttons) to the side window.
+        const away = document.createElement("div");
+        away.className = "side-away";
+        away.innerHTML = 'This page is open in the side window. <button type="button">Bring it back</button>';
+        main.parentNode.insertBefore(away, main);
+        doc.body.appendChild(main);
+
+        // Copy buttons write through the window that was clicked.
+        Object.defineProperty(navigator, "clipboard", { configurable: true, get: function () { return pip.navigator.clipboard; } });
+
+        // A link opens in the main window; the side window closes.
+        doc.addEventListener("click", function (e) {
+          const a = e.target.closest("a[href]");
+          if (!a || a.target === "_blank" || a.getAttribute("href").indexOf("#") === 0) return;
+          e.preventDefault();
+          location.href = a.href;
+          pip.close();
+        });
+        away.querySelector("button").addEventListener("click", function () { pip.close(); });
+        pip.addEventListener("pagehide", function () {
+          delete navigator.clipboard;
+          away.replaceWith(main);
+        });
+        return;
+      } catch (err) { /* not allowed here: fall back to an ordinary window */ }
+    }
+
+    const left = (scr.availLeft || 0) + scr.availWidth - w;
+    const top = scr.availTop || 0;
+    window.open(location.href, "course-side-window", "popup,left=" + left + ",top=" + top + ",width=" + w + ",height=" + h);
+  });
+});
+</script>

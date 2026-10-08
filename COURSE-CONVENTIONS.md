@@ -58,7 +58,7 @@ book/                      book.config.json, front/introduction.md, package.json
 .gitignore                 node_modules/, the browser profile folder, _trainer/
 ```
 
-Every site layout must include this kit's `site/image-lightbox.html`, `site/page-nav.html` and `site/expect-box.html`, pasted just before `</body>` in `_layouts/default.html`. The lightbox opens a clicked screenshot full size. The page navigation adds "Previous chapter" and "Next chapter" links at the bottom of every page, read from the sidebar, so readers can move on when the sidebar is hidden on a narrow or split-screen window. Don't add Back/Next lines to the Markdown as well. When you set up a new course, or touch the layout of an older one that doesn't have it yet, add it. If the snippet changes, update it here first, then copy it into each course.
+Every site layout must include this kit's `site/image-lightbox.html`, `site/page-nav.html`, `site/expect-box.html` and `site/side-window.html`, pasted just before `</body>` in `_layouts/default.html`. The lightbox opens a clicked screenshot in its own window. The page navigation adds "Previous chapter" and "Next chapter" links at the bottom of every page, read from the sidebar, so readers can move on when the sidebar is hidden on a narrow or split-screen window. Don't add Back/Next lines to the Markdown as well. When you set up a new course, or touch the layout of an older one that doesn't have it yet, add it. If the snippet changes, update it here first, then copy it into each course. The side window adds a **Pop out** button to every chapter page, which opens the page in an always-on-top window a quarter of the screen wide (Edge and Chrome), so participants can follow the steps while they work.
 
 ---
 
