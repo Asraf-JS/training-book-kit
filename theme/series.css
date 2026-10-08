@@ -130,6 +130,9 @@ blockquote.key { border-color: var(--rule-key); background: var(--tint-key); }
 blockquote.warn { position: relative; border-color: var(--rule-warn, #d13438); background: var(--tint-warn, #fdecec); padding-left: 11mm; }
 blockquote.warn::before { content: "!"; position: absolute; left: 3.4mm; top: 2.6mm; width: 4.8mm; height: 4.8mm; border-radius: 50%; background: var(--rule-warn, #d13438); color: #fff; font-weight: 700; font-size: 9pt; line-height: 4.8mm; text-align: center; }
 blockquote.warn strong { color: #a4262c; }
+.expect { margin: 3mm 0 4mm; padding: 2.6mm 4mm; border: 0.6pt solid var(--rule-note); border-radius: 3pt; background: #fafafa; }
+.expect .expect-title { font-weight: 700; color: var(--rule-note); margin: 0 0 1.5mm; }
+.expect > :last-child { margin-bottom: 0; }
 
 /* Figures */
 figure { margin: 3mm 0 5mm; text-align: center; break-inside: avoid; }
