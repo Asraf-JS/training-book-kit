@@ -58,7 +58,7 @@ book/                      book.config.json, front/introduction.md, package.json
 .gitignore                 node_modules/, the browser profile folder, _trainer/
 ```
 
-Every site layout must include this kit's `site/image-lightbox.html`, pasted just before `</body>` in `_layouts/default.html`. Clicking a screenshot then opens it full size with its alt text as the caption. When you set up a new course, or touch the layout of an older one that doesn't have it yet, add it. If the snippet changes, update it here first, then copy it into each course.
+Every site layout must include this kit's `site/image-lightbox.html` and `site/page-nav.html`, pasted just before `</body>` in `_layouts/default.html`. The lightbox opens a clicked screenshot full size. The page navigation adds "Previous chapter" and "Next chapter" links at the bottom of every page, read from the sidebar, so readers can move on when the sidebar is hidden on a narrow or split-screen window. Don't add Back/Next lines to the Markdown as well. When you set up a new course, or touch the layout of an older one that doesn't have it yet, add it. If the snippet changes, update it here first, then copy it into each course.
 
 ---
 
