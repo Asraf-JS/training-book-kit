@@ -1,0 +1,186 @@
+<!-- Step animations for course sites. Paste this block into _layouts/default.html,
+     just before the closing body tag, after the side window. In a chapter README, put an
+     empty placeholder under the step's static screenshot, indented to sit inside the step:
+
+       <div class="step-anim" data-manifest="../assets/animations/02-02-05/manifest.json" markdown="0"></div>
+
+     The manifest lists the clean frames, the canvas size in native pixels and the steps.
+     Coordinates are native screenshot pixels and are mapped to percentages, so the cursor
+     stays on target at every width. Nothing plays until the learner presses Play. The
+     book ignores the empty placeholder and prints the static screenshot as before.
+     See skills/interactive-training-animations/SKILL.md for when to animate a step. -->
+<style>
+.step-anim{margin:4px 0 22px;max-width:100%;}
+.step-anim .sa-stage{
+  position:relative;overflow:hidden;cursor:pointer;
+  border:1px solid var(--border);border-radius:8px;background:#fff;
+}
+.step-anim .sa-stage img{
+  position:absolute;inset:0;width:100%;height:100%;
+  margin:0;border:0;border-radius:0;box-shadow:none;
+  opacity:0;transition:opacity .35s ease;
+}
+.step-anim .sa-stage img.on{opacity:1;}
+.step-anim .sa-cursor{
+  position:absolute;width:3.2%;min-width:14px;max-width:26px;
+  transform:translate(-8%,-4%);pointer-events:none;z-index:3;
+  transition-property:left,top;transition-timing-function:cubic-bezier(.45,.05,.3,1);
+  filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));
+}
+.step-anim .sa-pulse{
+  position:absolute;width:6%;aspect-ratio:1;border-radius:50%;
+  border:3px solid #E81123;transform:translate(-50%,-50%) scale(.2);
+  opacity:0;pointer-events:none;z-index:2;
+}
+.step-anim .sa-pulse.go{animation:sa-pulse .45s ease-out;}
+@keyframes sa-pulse{0%{opacity:.9;transform:translate(-50%,-50%) scale(.2);}100%{opacity:0;transform:translate(-50%,-50%) scale(1);}}
+.step-anim .sa-note{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:4;
+  max-width:70%;padding:12px 16px;border-radius:10px;
+  background:var(--teal-light);color:var(--text-dark, #1f2937);border:2px solid var(--teal);
+  font-size:15px;line-height:1.45;box-shadow:0 4px 18px rgba(0,0,0,.18);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.step-anim .sa-note.on{opacity:1;}
+.step-anim .sa-tag{
+  position:absolute;right:4%;bottom:14%;z-index:4;padding:3px 10px;border-radius:999px;
+  background:var(--teal);color:#fff;font-size:13px;font-weight:600;
+  opacity:0;transition:opacity .3s;
+}
+.step-anim .sa-tag.on{opacity:1;}
+.step-anim .sa-play{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;
+  display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;
+  border:0;background:var(--teal);color:#fff;font:600 15px/1 inherit;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.25);
+}
+.step-anim.playing .sa-play,.step-anim.done .sa-play{display:none;}
+.step-anim .sa-bar{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}
+.step-anim .sa-bar button{
+  border:1px solid var(--border);background:var(--bg-soft);color:var(--teal);
+  border-radius:8px;padding:5px 12px;font:600 13px/1.2 inherit;cursor:pointer;
+}
+.step-anim .sa-bar button:focus-visible,.step-anim .sa-play:focus-visible{outline:3px solid #0078D4;outline-offset:2px;}
+.step-anim .sa-caption{flex:1 1 220px;margin:0;font-size:14px;color:var(--text-mid, #4b5563);}
+@media (max-width:600px){.step-anim .sa-note{font-size:13px;max-width:86%;padding:8px 10px;}}
+@media print{.step-anim{display:none;}}
+</style>
+<script>
+(function () {
+  const holders = document.querySelectorAll(".step-anim[data-manifest]");
+  if (!holders.length) return;
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const CURSOR = '<svg viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg"><path d="M2 2v21l5.5-5 3.6 8.2 3.3-1.5-3.5-8H18z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+
+  function build(el, m, base) {
+    const [W, H] = m.canvas;
+    const pct = p => [(p[0] / W) * 100 + "%", (p[1] / H) * 100 + "%"];
+    el.innerHTML =
+      '<div class="sa-stage" role="img"></div>' +
+      '<div class="sa-bar"><button type="button" class="sa-toggle">Play</button>' +
+      '<button type="button" class="sa-replay">Replay</button>' +
+      '<p class="sa-caption" aria-live="polite"></p></div>';
+    const stage = el.querySelector(".sa-stage");
+    stage.style.aspectRatio = W + " / " + H;
+    stage.setAttribute("aria-label", m.title || "Animated demonstration of this step");
+    const frames = {};
+    Object.keys(m.frames).forEach(function (k, i) {
+      const img = new Image();
+      img.alt = "";
+      img.decoding = "async";
+      img.src = new URL(m.frames[k], base).href;
+      if (i === 0) img.className = "on";
+      stage.appendChild(img);
+      frames[k] = img;
+    });
+    stage.insertAdjacentHTML("beforeend",
+      '<span class="sa-pulse"></span><span class="sa-cursor">' + CURSOR + '</span>' +
+      '<div class="sa-note"></div><span class="sa-tag"></span>' +
+      '<button type="button" class="sa-play" aria-label="Play the demonstration">&#9654; Watch this step</button>');
+    const cursor = stage.querySelector(".sa-cursor");
+    const pulse = stage.querySelector(".sa-pulse");
+    const note = stage.querySelector(".sa-note");
+    const tag = stage.querySelector(".sa-tag");
+    const caption = el.querySelector(".sa-caption");
+    const toggle = el.querySelector(".sa-toggle");
+    caption.textContent = m.intro || "Press Play to watch the clicks for this step.";
+
+    let run = 0, paused = false, wake = null;
+    const sleep = ms => new Promise(function (res) {
+      const end = Date.now() + ms;
+      (function tick() {
+        if (paused) { wake = tick; return; }
+        const left = end - Date.now();
+        left <= 0 ? res() : setTimeout(tick, Math.min(left, 100));
+      })();
+    });
+    function show(k) { Object.keys(frames).forEach(f => frames[f].classList.toggle("on", f === k)); }
+    function place(p, ms) {
+      const [x, y] = pct(p);
+      cursor.style.transitionDuration = (still ? 0 : ms) + "ms";
+      cursor.style.left = x; cursor.style.top = y;
+    }
+    function reset() {
+      show(Object.keys(frames)[0]);
+      note.classList.remove("on"); tag.classList.remove("on");
+      place(m.start || [W / 2, H / 2], 0);
+    }
+    async function play() {
+      const me = ++run;
+      paused = false;
+      el.classList.add("playing");
+      toggle.textContent = "Pause";
+      reset();
+      await sleep(400);
+      for (const s of m.steps) {
+        if (me !== run) return;
+        caption.textContent = s.caption || "";
+        note.classList.toggle("on", !!s.note);
+        if (s.note) note.textContent = s.note;
+        tag.classList.toggle("on", !!s.tag);
+        if (s.tag) tag.textContent = s.tag;
+        if (s.to) {
+          const ms = s.moveMs || 900;
+          place(s.to, ms);
+          await sleep(still ? 300 : ms + 150);
+          if (me !== run) return;
+        }
+        if (s.click && !still) {
+          const [x, y] = pct(s.to);
+          pulse.style.left = x; pulse.style.top = y;
+          pulse.classList.remove("go"); void pulse.offsetWidth; pulse.classList.add("go");
+          await sleep(200);
+        }
+        if (s.frame) show(s.frame);
+        await sleep(s.hold || 900);
+      }
+      if (me !== run) return;
+      toggle.textContent = "Play";
+      el.classList.remove("playing");
+      el.classList.add("done");
+    }
+    function pauseResume() {
+      if (!el.classList.contains("playing")) { play(); return; }
+      paused = !paused;
+      toggle.textContent = paused ? "Resume" : "Pause";
+      if (!paused && wake) { const w = wake; wake = null; w(); }
+    }
+    stage.querySelector(".sa-play").addEventListener("click", function (e) { e.stopPropagation(); play(); });
+    stage.addEventListener("click", pauseResume);
+    toggle.addEventListener("click", pauseResume);
+    el.querySelector(".sa-replay").addEventListener("click", play);
+    reset();
+  }
+
+  function load(el) {
+    const url = new URL(el.dataset.manifest, location.href);
+    fetch(url).then(r => r.json()).then(m => build(el, m, url)).catch(function () { el.remove(); });
+  }
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); load(e.target); } });
+    }, { rootMargin: "300px" });
+    holders.forEach(h => io.observe(h));
+  } else holders.forEach(load);
+})();
+</script>

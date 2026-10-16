@@ -16,6 +16,7 @@ Every book in the series uses this kit, so a change here (the layout, a palette,
 | `site/page-nav.html` | Previous and next chapter links at the bottom of every page on the course websites, built from the sidebar. Paste it just before `</body>` in each course's `_layouts/default.html` |
 | `site/expect-box.html` | Styles the collapsible **What should you see?** boxes on the course websites. Paste it just before the closing body tag in each course's `_layouts/default.html`. The book prints these boxes open |
 | `site/side-window.html` | A **Pop out** button on every chapter page of the course websites: the page moves into an always-on-top window a quarter of the screen wide (Edge and Chrome), or an ordinary window on the right in other browsers. Paste it just before the closing body tag, after the lightbox |
+| `site/step-animation.html` | A **Watch this step** player for the course websites: a cursor moves over the real screenshots and clicks, one step at a time, with Play, Pause and Replay. Each animation is a small `manifest.json` beside its WebP frames. Paste it just before the closing body tag, after the side window. The book ignores it and prints the static screenshot. See `skills/interactive-training-animations/SKILL.md` for when a step deserves one |
 | `front/about-the-author.md` | The About the author page, shared by every book |
 | `COURSE-CONVENTIONS.md` | The shared writing style, repository layout and chapter skeletons for every course. Each course's `CLAUDE.md` points here |
 
