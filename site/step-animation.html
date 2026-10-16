@@ -135,10 +135,7 @@
       for (const s of m.steps) {
         if (me !== run) return;
         caption.textContent = s.caption || "";
-        note.classList.toggle("on", !!s.note);
-        if (s.note) note.textContent = s.note;
-        tag.classList.toggle("on", !!s.tag);
-        if (s.tag) tag.textContent = s.tag;
+        if (!s.note) note.classList.remove("on");
         if (s.to) {
           const ms = s.moveMs || 900;
           place(s.to, ms);
@@ -152,6 +149,11 @@
           await sleep(200);
         }
         if (s.frame) show(s.frame);
+        // Notes and tags belong to the frame they describe, so they change with it
+        note.classList.toggle("on", !!s.note);
+        if (s.note) note.textContent = s.note;
+        tag.classList.toggle("on", !!s.tag);
+        if (s.tag) tag.textContent = s.tag;
         await sleep(s.hold || 900);
       }
       if (me !== run) return;
