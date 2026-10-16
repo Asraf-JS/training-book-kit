@@ -66,7 +66,7 @@ Do not assume that every item classified `animated` can be built from the availa
 - Use relative paths for site-owned assets and respect the GitHub Pages repository base path. Avoid hotlinking `raw.githubusercontent.com` in production manuals.
 - Default to screenshots plus simulated cursor. Use MP4/WebM for actual recorded clips when needed. GIF is an optional export, not a default.
 - Lazy-load off-screen images and animations. Cache reusable assets; optimise screenshots to WebP or PNG after checking legibility. Do not duplicate the same source image for every step.
-- Honor `prefers-reduced-motion`: show a static final/before screenshot and clear written directions rather than forced animation. Provide Pause, Replay, and keyboard-focusable controls; do not autoplay motion indefinitely without controls.
+- Honour `prefers-reduced-motion`: show a static final/before screenshot and clear written directions rather than forced animation. Provide Pause, Replay, and keyboard-focusable controls; do not autoplay motion indefinitely without controls.
 - Ensure overlays do not block existing lightbox, navigation, copy buttons or course interactions.
 - Printable PDF/book view must use one meaningful static screenshot and caption. Do not rely on motion to communicate required instructions.
 
