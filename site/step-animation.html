@@ -8,6 +8,9 @@
      Coordinates are native screenshot pixels and are mapped to percentages, so the cursor
      stays on target at every width. Nothing plays until the learner presses Play. The
      book ignores the empty placeholder and prints the static screenshot as before.
+     Step fields: caption, to [x,y], moveMs, click, frame, frameAt ("start" shows the frame
+     before the cursor moves), hold, note, tag, and for drags press (hold the button down
+     before moving) and release (let go after moving).
      See skills/interactive-training-animations/SKILL.md for when to animate a step. -->
 <style>
 .step-anim{margin:4px 0 22px;max-width:100%;}
@@ -26,6 +29,11 @@
   transform:translate(-8%,-4%);pointer-events:none;z-index:3;
   transition-property:left,top;transition-timing-function:cubic-bezier(.45,.05,.3,1);
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));
+}
+.step-anim .sa-cursor svg{position:relative;z-index:1;}
+.step-anim .sa-cursor.held::before{
+  content:"";position:absolute;left:-30%;top:-22%;width:70%;aspect-ratio:1;border-radius:50%;
+  background:rgba(232,17,35,.3);border:2px solid #E81123;
 }
 .step-anim .sa-pulse{
   position:absolute;width:6%;aspect-ratio:1;border-radius:50%;
@@ -122,7 +130,7 @@
     }
     function reset() {
       show(Object.keys(frames)[0]);
-      note.classList.remove("on"); tag.classList.remove("on");
+      note.classList.remove("on"); tag.classList.remove("on"); cursor.classList.remove("held");
       place(m.start || [W / 2, H / 2], 0);
     }
     async function play() {
@@ -136,19 +144,23 @@
         if (me !== run) return;
         caption.textContent = s.caption || "";
         if (!s.note) note.classList.remove("on");
+        // Drags: press holds the mouse button down before moving, release lets go after
+        if (s.press) { cursor.classList.add("held"); await sleep(450); }
+        if (s.frame && s.frameAt === "start") show(s.frame);
         if (s.to) {
           const ms = s.moveMs || 900;
           place(s.to, ms);
           await sleep(still ? 300 : ms + 150);
           if (me !== run) return;
         }
-        if (s.click && !still) {
+        if (s.release) cursor.classList.remove("held");
+        if ((s.click || s.release) && !still) {
           const [x, y] = pct(s.to);
           pulse.style.left = x; pulse.style.top = y;
           pulse.classList.remove("go"); void pulse.offsetWidth; pulse.classList.add("go");
           await sleep(200);
         }
-        if (s.frame) show(s.frame);
+        if (s.frame && s.frameAt !== "start") show(s.frame);
         // Notes and tags belong to the frame they describe, so they change with it
         note.classList.toggle("on", !!s.note);
         if (s.note) note.textContent = s.note;
