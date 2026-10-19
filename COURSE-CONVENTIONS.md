@@ -74,7 +74,7 @@ In this order:
 6. Course Scenario: a quoted scenario paragraph, then a Stage | What happens table.
 7. Chapters table: `# | Chapter | Copy-paste (or Prompts) | What you will do | Time`, with a Day column for multi-day courses.
 8. Sample Data, Before You Start, What to Learn Next, Need Help?
-9. Footer: `*Last updated: Month YYYY | Trainer: Asraf*` and the copyright line.
+9. Footer: `*Last updated: Month YYYY \| Trainer: Asraf*` and the copyright line. Escape the `|` as `\|`: unescaped, the site reads the line as a table and shows the asterisks.
 
 ---
 
