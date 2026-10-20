@@ -4,6 +4,8 @@ The shared rules for Asraf's course repositories: Microsoft-Power-Automate, M365
 
 Course-specific rules in a course's `CLAUDE.md` win over this file.
 
+The brand (logo files, colours, fonts, design style and a ready-made prompt for Claude chat) is in this kit's `BRAND.md`, with the logo files in `brand/`. Use it for anything visual: sites, decks, banners and new formats.
+
 ---
 
 ## Who the courses are for
@@ -45,7 +47,7 @@ README.md                  Home page (also the site's index content)
 index.md                   README.md with Jekyll front matter (layout: default, title: Home)
 _config.yml                theme: jekyll-theme-minimal
 _layouts/default.html      Sidebar layout; retitle it and change the base path and nav per course
-logo.png                   Used by the layout
+logo.png                   Used by the layout; copy it from this kit's brand/logo.png
 program-flow.png           Banner rendered from _design/program-flow.html
 <Course>-Book.pdf          Built by book/
 NN-chapter-name/
