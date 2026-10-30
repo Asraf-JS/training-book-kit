@@ -82,6 +82,8 @@ In this order:
 
 ## Chapter README skeleton
 
+The skeleton sets the format. For how a lab should read (a story opener, concrete steps, one check per section and a student read-through before review), follow `skills/write-lab-chapter/SKILL.md`.
+
 ```
 # 04 - Chapter Title
 
