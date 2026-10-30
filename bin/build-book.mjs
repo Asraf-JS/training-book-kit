@@ -98,6 +98,7 @@ const WEB_ONLY = [
 const CALLOUTS = [
   [/^(tip|good habit)/i, "tip"],
   [/^(try it|workshop exercise|exercise)/i, "try"],
+  [/^(download|muat turun)/i, "try"],
   [/^(warning|stop|caution)/i, "warn"],
   [/^(key point|important|remember|why it matters)/i, "key"],
 ];

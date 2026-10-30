@@ -1,0 +1,79 @@
+<!-- Coloured callout boxes for course sites. Paste this block into _layouts/default.html,
+     just before the closing body tag. A blockquote in .main-inner is styled by the bold
+     label it starts with, using the same labels as the book:
+       > **Download:** ...                       purple box with a download icon
+       > **Key point:** / **Important:** / **Remember:** / **Why it matters:**   yellow box
+       > **Warning:** / **Stop:** / **Caution:**  red box with an exclamation mark
+     Any other blockquote keeps the site's normal teal style. Malay labels work too
+     (Muat turun, Penting, Amaran, Berhenti, Awas). Needs the --purple, --purple-light
+     and --bg variables every course layout defines. -->
+<style>
+.main-inner blockquote.dl{
+  position:relative;
+  background:var(--purple-light);
+  border:1px solid var(--purple);
+  border-left:4px solid var(--purple);
+  border-radius:8px;
+  padding:16px 18px 16px 60px;
+  margin:20px 0;
+}
+.main-inner blockquote.dl::before{
+  content:"";
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  width:30px;height:30px;border-radius:50%;
+  background:var(--purple) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11M7 10l5 5 5-5M5 20h14'/%3E%3C/svg%3E") center/18px no-repeat;
+}
+.main-inner blockquote.dl strong{color:var(--purple);}
+.main-inner blockquote.dl a{
+  display:inline-block;background:var(--purple);color:var(--bg);
+  padding:3px 12px;border-radius:6px;font-weight:600;text-decoration:none;
+}
+.main-inner blockquote.dl a strong{color:var(--bg);}
+.main-inner blockquote.dl a:hover{opacity:.88;}
+.main-inner blockquote.dl ul{margin:8px 0 0 18px;}
+.main-inner blockquote.dl li{margin:6px 0;}
+
+.main-inner blockquote.key{background:#fff7e0;border-left-color:#e0a100;}
+.main-inner blockquote.key strong{color:#8a5a00;}
+
+.main-inner blockquote.warn{
+  position:relative;
+  background:#fdecec;border-left-color:#d13438;
+  padding-left:52px;
+}
+.main-inner blockquote.warn::before{
+  content:"!";
+  position:absolute;left:14px;top:14px;
+  width:24px;height:24px;border-radius:50%;
+  background:#d13438;color:#fff;
+  font-weight:700;font-size:15px;line-height:24px;text-align:center;
+}
+.main-inner blockquote.warn strong{color:#a4262c;}
+
+@media (prefers-color-scheme: dark){
+  .main-inner blockquote.key{background:#3a2f0b;border-left-color:#f5c542;}
+  .main-inner blockquote.key strong{color:#ffd76a;}
+  .main-inner blockquote.warn{background:#3b1519;border-left-color:#f1707b;}
+  .main-inner blockquote.warn strong{color:#ff9aa2;}
+}
+@media print{
+  .main-inner blockquote.dl,.main-inner blockquote.key,.main-inner blockquote.warn{break-inside:avoid;}
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var kinds = [
+    [/^(download|muat turun)/i, "dl"],
+    [/^(warning|stop|caution|amaran|berhenti|awas)/i, "warn"],
+    [/^(key point|important|remember|why it matters|penting)/i, "key"]
+  ];
+  document.querySelectorAll(".main-inner blockquote").forEach(function (q) {
+    var first = q.querySelector("p > strong:first-child");
+    if (!first || first.parentNode !== q.firstElementChild) return;
+    var label = first.textContent.trim();
+    for (var i = 0; i < kinds.length; i++) {
+      if (kinds[i][0].test(label)) { q.classList.add(kinds[i][1]); break; }
+    }
+  });
+});
+</script>

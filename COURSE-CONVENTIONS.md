@@ -60,7 +60,7 @@ book/                      book.config.json, front/introduction.md, package.json
 .gitignore                 node_modules/, the browser profile folder, _trainer/
 ```
 
-Every site layout must include this kit's `site/image-lightbox.html`, `site/page-nav.html`, `site/expect-box.html` and `site/side-window.html`, pasted just before `</body>` in `_layouts/default.html`. The lightbox opens a clicked screenshot in its own window. The page navigation adds "Previous chapter" and "Next chapter" links at the bottom of every page, read from the sidebar, so readers can move on when the sidebar is hidden on a narrow or split-screen window. Don't add Back/Next lines to the Markdown as well. When you set up a new course, or touch the layout of an older one that doesn't have it yet, add it. If the snippet changes, update it here first, then copy it into each course. The side window adds a **Pop out** button to every chapter page, which opens the page in an always-on-top window a quarter of the screen wide (Edge and Chrome), so participants can follow the steps while they work.
+Every site layout must include this kit's `site/image-lightbox.html`, `site/page-nav.html`, `site/expect-box.html`, `site/side-window.html` and `site/callouts.html`, pasted just before `</body>` in `_layouts/default.html`. The lightbox opens a clicked screenshot in its own window. The page navigation adds "Previous chapter" and "Next chapter" links at the bottom of every page, read from the sidebar, so readers can move on when the sidebar is hidden on a narrow or split-screen window. Don't add Back/Next lines to the Markdown as well. When you set up a new course, or touch the layout of an older one that doesn't have it yet, add it. If the snippet changes, update it here first, then copy it into each course. The side window adds a **Pop out** button to every chapter page, which opens the page in an always-on-top window a quarter of the screen wide (Edge and Chrome), so participants can follow the steps while they work.
 
 ---
 
@@ -113,7 +113,8 @@ One short paragraph: where this chapter sits in the scenario.
 
   *One or two sentences on what to notice.*
   ```
-- Callouts are blockquotes that start with a bold label. The book colours them by label: **Tip** and **Good habit** (teal), **Try it** (purple), **Key point**, **Important** and **Why it matters** (orange), **Warning**, **Stop** and **Caution** (red), anything else, such as **Note** or **If you don't see this** (blue).
+- Put chapter downloads in a `> **Download:**` callout; the site shows it as a purple box with a download icon (`site/callouts.html`).
+- Callouts are blockquotes that start with a bold label. The book colours them by label: **Tip** and **Good habit** (teal), **Try it** and **Download** (purple), **Key point**, **Important** and **Why it matters** (orange in the book, yellow on the site), **Warning**, **Stop** and **Caution** (red), anything else, such as **Note** or **If you don't see this** (blue).
 - Values the participant types go in fenced `text` blocks, which get a Copy button on the site.
 - Link to other chapters with relative links (`../04-compare-the-quotations/`).
 - After a step with a result participants can check (a figure, a finding, a draft), add a collapsible **What should you see?** box with the expected result. Write it so they try the step first and open the box to check. Use this exact form, with the blank lines:
