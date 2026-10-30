@@ -20,6 +20,7 @@ Every book in the series uses this kit, so a change here (the layout, a palette,
 | `front/about-the-author.md` | The About the author page, shared by every book |
 | `BRAND.md`, `brand/` | Asraf's brand: logo files (original, transparent dark and light), colours, fonts, design style, and a prompt for Claude chat |
 | `COURSE-CONVENTIONS.md` | The shared writing style, repository layout and chapter skeletons for every course. Each course's `CLAUDE.md` points here |
+| `skills/write-lab-chapter/` | How a lab chapter should read, with a before-and-after example and the student read-through checklist to run before a pull request. Claude and Codex both follow it |
 
 Fonts (Inter and JetBrains Mono) come from npm packages and are embedded in the PDF.
 
