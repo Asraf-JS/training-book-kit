@@ -39,7 +39,17 @@ So: when a chapter needs more than small fixes, **rewrite it to this pattern in 
 - **Say what each paste replaces.** A replacement block gets a label (**Replacement for procedure step 4**) and a step that says "Select the whole of step 4, then paste over it".
 - **One paste per place.** Group lines that land in the same place into one block, and say so ("the heading and both questions are included"). Short labels are typed beside the instruction, not given a Copy box each.
 - **Supplied material saves typing, not thinking.** If you supply a reference draft or a completed table, say in one sentence why everyone uses the same one ("so the rest of the lab works the same for everyone") and what the participant still decides.
+- **Spell out a control the first time.** The first step that uses the name box, a tab menu or a column edge says exactly where it is and what to do: "Click the name box (top left, above column **A**), type `A2` and press **Enter**." Later steps can shorten to "Do the same for `F8`". If a section relies on a skill from an earlier section, repeat the full instruction once rather than assuming it stuck.
+- **Supplied text must match the screenshots.** If a screenshot shows text the participant typed or pasted (a guide tab, a check table, a log entry), the chapter supplies that exact text. Otherwise everyone writes something different, compares it with the screenshot and decides they've gone wrong.
+- **Keep the skill manual, supply the rest.** If the skill is typing records or finding values, show the values as a plain table in the notes so participants type straight across without switching windows, and switch off any copy button on that table. Put answers they must find themselves in a **What should you see?** box. Paste blocks are for text that only saves typing.
+- **Answer the question they'll ask, once.** Where students will reach for a shortcut or a workaround (switching tabs, viewing two tabs side by side, autocomplete), add one short **Tip:** callout at the point they first need it, not in every step.
 - **Captions say what to notice,** in one or two sentences, including where the screenshot differs from what the participant will see ("The screenshot has an extra test row, TR-007; yours has six.").
+
+## Screenshots
+
+- **Full window, in step order.** Each screenshot shows the whole app after the step it sits under. Use plain boxes, without step numbers, unless the chapter's sections are settled: renumbered sections leave numbers pointing at the wrong steps.
+- **Zoom in on small controls.** A tab arrow, a column edge, an **Add sheet** button or a menu item is hard to find in a 1600 px frame. Add a small focused capture under the step, box the control, and add an arrow for a drag. Keep it at its own size; don't scale it up to the full-window width.
+- **Small captures cost almost nothing.** A focused capture is a few KB. Prefer a new small capture to a second copy of a full-window source cropped down.
 
 ## Participant language
 
@@ -88,8 +98,14 @@ Run this before opening a pull request for a new or rewritten chapter, and whene
 7. Do I know why I'm doing this section, in the scenario's terms?
 8. Is there any trainer, reference-run or validation language I'd see as a participant?
 9. Could I finish the section within its share of the estimated time?
+10. The first time I use a control, do I know exactly where it is? Is there a control I'd struggle to find in a full-window screenshot?
+11. Where would I ask the trainer "is there a quicker way?" Is the answer there?
 
 Report each problem with its section number and a proposed fix. Fix the chapter only when the user asks you to.
+
+## Reviewing with the trainer
+
+After the rewrite, the trainer reads the chapter as a teacher and flags where a student would stall: a control they can't find, a step that assumes a skill, a question they'll ask. Fix each one as it comes, using the trainer's own focused capture when they send one, and keep the fixes on one branch until the trainer says to merge. Then fold any new pattern back into this skill, so the next chapter doesn't need the same fix.
 
 ## Working with another writer
 
