@@ -1,7 +1,8 @@
 <!-- "Pop out" side window for course sites. Paste this whole block into
      _layouts/default.html, just before the closing body tag (after the lightbox).
 
-     Every chapter page (notes and prompts) gets a Pop out button above its title.
+     Every chapter page (notes and prompts) gets a Pop out button above its title,
+     and a small ↗ beside each section heading that pops out at that section.
      In Edge and Chrome it moves the page into a Picture-in-Picture window, which
      stays on top of other windows, a quarter of the screen wide and full height,
      so participants can follow the steps while they work in the app. It opens at the
@@ -19,6 +20,14 @@
   font:inherit;font-size:13px;font-weight:600;cursor:pointer;
 }
 .side-pop:hover,.side-pop:focus-visible{background:var(--teal-light);outline:none;}
+.side-pop-h{
+  margin-left:10px;padding:0 7px;vertical-align:middle;
+  border:1px solid transparent;border-radius:6px;
+  background:none;color:var(--teal);opacity:.6;
+  font:inherit;font-size:19px;font-weight:600;line-height:1.6;cursor:pointer;
+}
+.side-pop-h:hover,.side-pop-h:focus-visible{opacity:1;border-color:var(--teal);background:var(--teal-light);outline:none;}
+@media print{.side-pop,.side-pop-h{display:none;}}
 .side-away{
   margin:0 0 24px;padding:16px 18px;
   border:1px dashed var(--border);border-radius:10px;
@@ -71,8 +80,23 @@ document.addEventListener("DOMContentLoaded", function () {
     win.setTimeout(function () { goToPlace(win, root, place); }, 600);
   }
 
-  btn.addEventListener("click", async function () {
-    const place = readPlace();
+  // A small pop-out icon beside each section heading opens the side window at
+  // that section.
+  const blocks = Array.prototype.slice.call(main.querySelectorAll(BLOCKS));
+  main.querySelectorAll("h2").forEach(function (h) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "side-pop-h";
+    b.title = "Pop out from this section";
+    b.setAttribute("aria-label", "Pop out from " + h.textContent.trim());
+    b.textContent = "↗";
+    h.appendChild(b);
+    b.addEventListener("click", function () { popOut({ i: blocks.indexOf(h), top: 0 }); });
+  });
+
+  btn.addEventListener("click", function () { popOut(readPlace()); });
+
+  async function popOut(place) {
     const scr = window.screen;
     const w = Math.round(scr.availWidth * 0.25);
     const h = scr.availHeight;
@@ -89,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
           doc.head.appendChild(c);
         });
         const fit = doc.createElement("style");
-        fit.textContent = "body{display:block;min-height:0;} .main-inner{padding:20px 18px 40px !important;max-width:none;} .side-pop,.breadcrumb{display:none;}";
+        fit.textContent = "body{display:block;min-height:0;} .main-inner{padding:20px 18px 40px !important;max-width:none;} .side-pop,.side-pop-h,.breadcrumb{display:none;}";
         doc.head.appendChild(fit);
 
         // Links and images keep working once moved: make their addresses absolute.
@@ -133,6 +157,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const root = side.document.querySelector(".main-inner");
       if (root) settle(side, root, place);
     });
-  });
+  }
 });
 </script>
