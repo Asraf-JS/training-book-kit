@@ -4,7 +4,9 @@
      Every chapter page (notes and prompts) gets a Pop out button above its title.
      In Edge and Chrome it moves the page into a Picture-in-Picture window, which
      stays on top of other windows, a quarter of the screen wide and full height,
-     so participants can follow the steps while they work in the app. Copy buttons,
+     so participants can follow the steps while they work in the app. It opens at the
+     place the reader had reached, and Bring it back returns them to where they were
+     in the side window. Copy buttons,
      What should you see? boxes and screenshots keep working in it. A link opens in
      the main window. Other browsers get an ordinary window on the right quarter of
      the screen, which isn't always on top. -->
@@ -46,7 +48,31 @@ document.addEventListener("DOMContentLoaded", function () {
   const h1 = main.querySelector("h1");
   main.insertBefore(btn, h1 || main.firstChild);
 
+  // Keep the reader's place: note the first block showing at the top of the
+  // window, then scroll the other window so the same block is at the top.
+  const BLOCKS = "h1,h2,h3,h4,p,li,pre,table,img,details,blockquote,hr";
+  function readPlace() {
+    const els = main.querySelectorAll(BLOCKS);
+    for (let i = 0; i < els.length; i++) {
+      const r = els[i].getBoundingClientRect();
+      if (r.bottom > 0) return { i: i, top: r.top };
+    }
+    return null;
+  }
+  function goToPlace(win, root, place) {
+    if (!place) return;
+    const el = root.querySelectorAll(BLOCKS)[place.i];
+    if (el) win.scrollBy(0, el.getBoundingClientRect().top - Math.max(place.top, 0));
+  }
+  function settle(win, root, place) {
+    // Again once styles and images have loaded, since they change the layout.
+    goToPlace(win, root, place);
+    win.setTimeout(function () { goToPlace(win, root, place); }, 150);
+    win.setTimeout(function () { goToPlace(win, root, place); }, 600);
+  }
+
   btn.addEventListener("click", async function () {
+    const place = readPlace();
     const scr = window.screen;
     const w = Math.round(scr.availWidth * 0.25);
     const h = scr.availHeight;
@@ -76,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
         away.innerHTML = 'This page is open in the side window. <button type="button">Bring it back</button>';
         main.parentNode.insertBefore(away, main);
         doc.body.appendChild(main);
+        settle(pip, main, place);
 
         // Copy buttons write through the window that was clicked.
         Object.defineProperty(navigator, "clipboard", { configurable: true, get: function () { return pip.navigator.clipboard; } });
@@ -90,8 +117,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         away.querySelector("button").addEventListener("click", function () { pip.close(); });
         pip.addEventListener("pagehide", function () {
+          const back = readPlace();
           delete navigator.clipboard;
           away.replaceWith(main);
+          settle(window, main, back);
         });
         return;
       } catch (err) { /* not allowed here: fall back to an ordinary window */ }
@@ -99,7 +128,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const left = (scr.availLeft || 0) + scr.availWidth - w;
     const top = scr.availTop || 0;
-    window.open(location.href, "course-side-window", "popup,left=" + left + ",top=" + top + ",width=" + w + ",height=" + h);
+    const side = window.open(location.href, "course-side-window", "popup,left=" + left + ",top=" + top + ",width=" + w + ",height=" + h);
+    if (side) side.addEventListener("load", function () {
+      const root = side.document.querySelector(".main-inner");
+      if (root) settle(side, root, place);
+    });
   });
 });
 </script>
