@@ -22,6 +22,8 @@ Every book in the series uses this kit, so a change here (the layout, a palette,
 | `BRAND.md`, `brand/` | Asraf's brand: logo files (original, transparent dark and light), colours, fonts, design style, and a prompt for Claude chat |
 | `COURSE-CONVENTIONS.md` | The shared writing style, repository layout and chapter skeletons for every course. Each course's `CLAUDE.md` points here |
 | `skills/write-lab-chapter/` | How a lab chapter should read, with a before-and-after example and the student read-through checklist to run before a pull request. Claude and Codex both follow it |
+| `skills/capture-lab/` | How Claude runs a lab in a signed-in Chrome with `tools/capture-mcp`, taking every screenshot the README references and writing the boxes into the chapter's shot spec |
+| `tools/capture-mcp/` | An MCP server that drives Chrome through a lab, saves masked captures under the README's file names and records the red boxes from what it clicked or selected. Its README covers setup, the first sign-in and what to do when Google asks you to verify |
 
 Fonts (Inter and JetBrains Mono) come from npm packages and are embedded in the PDF.
 

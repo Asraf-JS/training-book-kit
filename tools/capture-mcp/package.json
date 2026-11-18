@@ -1,0 +1,23 @@
+{
+  "name": "capture-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MCP server that drives a signed-in Chrome through a lab and writes screenshots and box specs into a course repository",
+  "type": "module",
+  "bin": {
+    "capture-mcp": "server.mjs"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "playwright": "^1.63.0",
+    "pngjs": "^7.0.0",
+    "zod": "^4.6.7"
+  }
+}
