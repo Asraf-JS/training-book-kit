@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Fake Sheets</title>
+<style>
+  body { margin: 0; font: 14px Arial, sans-serif; background: #f9fbfd; overflow: hidden; }
+  #top { height: 64px; display: flex; align-items: center; gap: 16px; padding: 0 16px; }
+  #title { font-size: 18px; }
+  #share { margin-left: auto; padding: 8px 18px; border-radius: 18px; border: 0; background: #c2e7ff; }
+  #acct { width: 32px; height: 32px; border-radius: 50%; background: #7b1fa2; display: inline-block; }
+  #toolbar { height: 40px; }
+  #fbar { height: 30px; display: flex; align-items: center; gap: 8px; padding-left: 4px; background: #fff; }
+  #t-name-box { width: 96px; height: 24px; border: 1px solid #ccc; border-radius: 4px; padding: 0 6px; }
+  #grid { position: absolute; left: 0; top: 140px; }
+  #tabs { position: absolute; left: 0; bottom: 0; height: 36px; width: 100%; display: flex; align-items: center; gap: 12px; padding-left: 40px; background: #f9fbfd; }
+  .docs-sheet-tab { padding: 6px 12px; }
+  #note { position: absolute; right: 20px; top: 104px; font-size: 12px; }
+  dialog { top: 200px; }
+</style></head>
+<body>
+<div id="top"><span id="title">GW - Sheets - Task Register</span>
+  <button id="share">Share</button>
+  <a id="acct" href="#" aria-label="Google Account: Test Trainer (trainer@example.com)"></a></div>
+<div id="toolbar"></div>
+<div id="fbar"><input id="t-name-box" value="A1"><span id="fx">TaskID</span></div>
+<div id="note">Owner trainer@example.com, link https://docs.google.com/spreadsheets/d/1AbCdEfGhIjKlMnOpQrStUvWxYz0123456789/edit</div>
+<canvas id="grid" width="1600" height="694"></canvas>
+<div id="tabs">
+  <button aria-label="Add Sheet" id="add">+</button>
+  <div class="docs-sheet-tab" id="tab-tasks">Tasks <span class="docs-sheet-tab-dropdown" aria-label="Tasks menu">&#9662;</span></div>
+  <div class="docs-sheet-tab" id="tab-summary">Summary</div>
+</div>
+<dialog id="dlg"><p>Share "GW - Sheets - Task Register"</p><p>Test Trainer (you)</p><button id="send">Send</button><button id="cancel" onclick="dlg.close()">Cancel</button></dialog>
+<script>
+  // Geometry the tests check against: row headings 46 px wide, column headings 22 px tall.
+  const COLS = [137, 137, 258, 160, 137, 145, 137, 137, 100, 100, 100, 100, 100];
+  const ROW_H = 33, HEAD_H = 22, ROWHEAD_W = 46, ROWS = 20;
+  const colX = [ROWHEAD_W]; for (const w of COLS) colX.push(colX.at(-1) + w);
+  window.geometry = { top: 140, colX, ROW_H, HEAD_H, ROWHEAD_W };
+  const g = grid.getContext("2d");
+  let sel = { c0: 0, r0: 0, c1: 0, r1: 0, fullCol: false, fullRow: false };
+  const letter = (i) => String.fromCharCode(65 + i);
+  function parse(a) {
+    a = a.toUpperCase().replace(/^.*!/, "");
+    let m;
+    if ((m = a.match(/^([A-Z])(\d+)(?::([A-Z])(\d+))?$/))) return { c0: m[1].charCodeAt(0) - 65, r0: +m[2] - 1, c1: (m[3] || m[1]).charCodeAt(0) - 65, r1: +(m[4] || m[2]) - 1 };
+    if ((m = a.match(/^([A-Z]):([A-Z])$/))) return { c0: m[1].charCodeAt(0) - 65, c1: m[2].charCodeAt(0) - 65, r0: 0, r1: ROWS - 1, fullCol: true };
+    if ((m = a.match(/^(\d+):(\d+)$/))) return { c0: 0, c1: COLS.length - 1, r0: +m[1] - 1, r1: +m[2] - 1, fullRow: true };
+    return null;
+  }
+  function draw() {
+    g.fillStyle = "#fff"; g.fillRect(0, 0, grid.width, grid.height);
+    const y = (r) => HEAD_H + r * ROW_H;
+    // Selection fill
+    g.fillStyle = "rgba(14,101,235,0.1)";
+    g.fillRect(colX[sel.c0], y(sel.r0), colX[sel.c1 + 1] - colX[sel.c0], y(sel.r1 + 1) - y(sel.r0));
+    // Gridlines
+    g.strokeStyle = "#e1e1e1"; g.lineWidth = 1;
+    for (const x of colX) { g.beginPath(); g.moveTo(x + 0.5, 0); g.lineTo(x + 0.5, grid.height); g.stroke(); }
+    for (let r = 0; r <= ROWS; r++) { g.beginPath(); g.moveTo(0, y(r) + 0.5); g.lineTo(grid.width, y(r) + 0.5); g.stroke(); }
+    // Column headings
+    for (let c = 0; c < COLS.length; c++) {
+      const on = c >= sel.c0 && c <= sel.c1;
+      g.fillStyle = on ? (sel.fullCol ? "#0b57d0" : "#d3e3fd") : "#fff";
+      g.fillRect(colX[c] + 1, 0, COLS[c] - 1, HEAD_H);
+      g.fillStyle = on && sel.fullCol ? "#fff" : "#444"; g.font = "11px Arial"; g.textAlign = "center";
+      g.fillText(letter(c), colX[c] + COLS[c] / 2, 15);
+    }
+    // Row headings and some cell text
+    for (let r = 0; r < ROWS; r++) {
+      const on = r >= sel.r0 && r <= sel.r1;
+      g.fillStyle = on ? (sel.fullRow ? "#0b57d0" : "#d3e3fd") : "#fff";
+      g.fillRect(0, y(r) + 1, ROWHEAD_W, ROW_H - 1);
+      g.fillStyle = on && sel.fullRow ? "#fff" : "#444"; g.textAlign = "center"; g.fillText(String(r + 1), ROWHEAD_W / 2, y(r) + 20);
+      if (r > 0 && r < 13) { g.textAlign = "left"; g.fillStyle = "#222"; g.font = "14px Arial"; g.fillText("T" + String(r).padStart(3, "0"), colX[0] + 4, y(r) + 21); }
+    }
+    // Header row filled navy, like the starter workbook
+    g.fillStyle = "#1f4e9c"; g.fillRect(colX[0] + 1, y(0) + 1, colX[8] - colX[0] - 1, ROW_H - 1);
+    // Outline: 1 px around a range, 2 px around a single cell, plus the fill handle
+    g.strokeStyle = "#1a73e8";
+    const single = sel.c0 === sel.c1 && sel.r0 === sel.r1;
+    g.lineWidth = single ? 2 : 1;
+    const x0 = colX[sel.c0], x1 = colX[sel.c1 + 1], y0 = y(sel.r0), y1 = Math.min(y(sel.r1 + 1), grid.height - 1);
+    g.strokeRect(x0 + 0.5, y0 + 0.5, x1 - x0 - 1, y1 - y0 - 1);
+    g.fillStyle = "#1a73e8"; g.fillRect(x1 - 4, y1 - 4, 7, 7);
+  }
+  document.getElementById("t-name-box").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    const s = parse(e.target.value);
+    if (s) { sel = { fullCol: false, fullRow: false, ...s }; draw(); }
+    e.target.blur();
+  });
+  share.onclick = () => dlg.show();
+  send.onclick = () => { window.sent = true; };
+  draw();
+</script>
+</body></html>

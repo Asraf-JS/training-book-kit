@@ -1,1 +1,5 @@
 node_modules/
+# Browser profiles hold Google cookies; they live outside the repo, but never commit one by accident
+profile/
+.capture-mcp/
+capture-mcp-profile/
